@@ -18,7 +18,7 @@ st.write(
 
 @st.cache_data
 def load_data():
-    df = pd.read_csv("data/netflix_titles.csv")
+    df = pd.read_csv("netflix_titles.csv")
     return df
 
 try:
@@ -32,8 +32,6 @@ st.subheader("Dataset preview")
 st.dataframe(df.head())
 
 st.markdown("---")
-
-# --------- FILTROS EN SIDEBAR ---------
 st.sidebar.header("Netflix Filters")
 
 type_options = df["type"].dropna().unique()
@@ -59,7 +57,6 @@ selected_countries = st.sidebar.multiselect(
     default=[]
 )
 
-# --------- APLICAR FILTROS ---------
 filtered_df = df.copy()
 
 if selected_types:
@@ -116,7 +113,6 @@ else:
 
 st.markdown("---")
 
-# --------- GRÁFICO 3: TOP GENRES ---------
 st.subheader("Top 10 genres / categories")
 
 if "listed_in" in filtered_df.columns:
@@ -140,4 +136,5 @@ if "listed_in" in filtered_df.columns:
         st.info("No genre data available for the selected filters.")
 else:
     st.info("Column `listed_in` not found in the dataset.")
+
 
