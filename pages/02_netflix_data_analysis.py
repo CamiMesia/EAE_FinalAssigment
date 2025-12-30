@@ -1,7 +1,10 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
+from layout import set_base_style, render_sidebar
 
+set_base_style()
+render_sidebar()
 st.set_page_config(page_title="Netflix Data Analysis", page_icon="🎬")
 
 st.title("🎬 Netflix Data Analysis")
@@ -137,3 +140,4 @@ if "listed_in" in filtered_df.columns:
         st.info("No genre data available for the selected filters.")
 else:
     st.info("Column `listed_in` not found in the dataset.")
+
