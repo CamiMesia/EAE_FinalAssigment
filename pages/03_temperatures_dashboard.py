@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from glob import glob
 
 from layout import set_base_style, render_sidebar
+
 set_base_style()
 render_sidebar()
 
@@ -17,17 +18,18 @@ st.write(
     """
 )
 
-df = None
+file_paths = sorted(glob("temperatures_part*.csv"))
+
 if file_paths:
     df_list = [pd.read_csv(path) for path in file_paths]
     df = pd.concat(df_list, ignore_index=True)
 else:
-    # fallback por si al final subes el CSV completo
+   
     try:
         df = pd.read_csv("temperatures.csv")
-    except Exception:
+    except FileNotFoundError:
         st.error(
-            "❌ Could not find `temperatures_part*.csv` or `temperatures.csv` "
+            "❌ Could not find any 'temperatures_part*.csv' or 'temperatures.csv' "
             "in the project root."
         )
         st.stop()
@@ -44,17 +46,11 @@ df["AvgTemperature"] = pd.to_numeric(df["AvgTemperature"], errors="coerce")
 
 df = df.dropna(subset=["Year", "Month", "AvgTemperature", "City"])
 
-with st.expander("📂 Show filtered dataset"):
-    st.write(
-        "Below you can see the subset of the dataset for the selected "
-        "Region, Country and City."
-    )
-    st.dataframe(df_city.sort_values(["Year", "Month", "Day"]), use_container_width=True)
-
-with st.expander("📂 Show full dataset (warning: large)"):
-    st.dataframe(df.head(5000), use_container_width=True)
-    st.caption("Only first 5,000 rows are shown for performance reasons.")
-file_paths = sorted(glob("temperatures_part*.csv"))
+df["Date"] = pd.to_datetime(
+    dict(year=df["Year"], month=df["Month"], day=df["Day"]),
+    errors="coerce",
+)
+df = df.dropna(subset=["Date"])
 
 st.subheader("📊 Basic Information")
 
@@ -166,5 +162,90 @@ else:
 
 st.markdown("---")
 
+st.subheader("🌡️ Comparing the Temperatures of the Cities")
 
+all_cities = sorted(df["City"].dropna().unique())
 
+default_cities = [c for c in ["Buenos Aires", "Dakar"] if c in all_cities]
+if not default_cities and len(all_cities) >= 2:
+    default_cities = all_cities[:2]
+
+selected_cities_compare = st.multiselect(
+    "Select the cities to compare:",
+    options=all_cities,
+    default=default_cities,
+)
+
+if selected_cities_compare:
+    min_date = df["Date"].min().date()
+    max_date = df["Date"].max().date()
+
+    col_d1, col_d2 = st.columns(2)
+    with col_d1:
+        start_date = st.date_input(
+            "Select the start date:",
+            value=min_date,
+            min_value=min_date,
+            max_value=max_date,
+        )
+    with col_d2:
+        end_date = st.date_input(
+            "Select the end date:",
+            value=max_date,
+            min_value=min_date,
+            max_value=max_date,
+        )
+
+    mask = (
+        (df["City"].isin(selected_cities_compare))
+        & (df["Date"] >= pd.to_datetime(start_date))
+        & (df["Date"] <= pd.to_datetime(end_date))
+    )
+    df_compare = df.loc[mask, ["Date", "City", "AvgTemperature"]].copy()
+
+    if df_compare.empty:
+        st.warning("No data for the selected cities and date range.")
+    else:
+       
+        df_compare["TempC"] = (df_compare["AvgTemperature"] - 32) * 5.0 / 9.0
+
+        fig3, ax3 = plt.subplots(figsize=(9, 4))
+        for city in selected_cities_compare:
+            city_data = (
+                df_compare[df_compare["City"] == city]
+                .sort_values("Date")
+            )
+            ax3.plot(
+                city_data["Date"],
+                city_data["TempC"],
+                label=city,
+                linewidth=1,
+            )
+
+        start_str = pd.to_datetime(start_date).strftime("%Y-%m-%d")
+        end_str = pd.to_datetime(end_date).strftime("%Y-%m-%d")
+
+        ax3.set_title(
+            f"Temperatures in {', '.join(selected_cities_compare)} "
+            f"from {start_str} to {end_str}"
+        )
+        ax3.set_xlabel("Date")
+        ax3.set_ylabel("Temperature (°C)")
+        ax3.legend()
+        st.pyplot(fig3)
+
+st.markdown("---")
+
+with st.expander("📂 Show filtered dataset"):
+    st.write(
+        "Below you can see the subset of the dataset for the selected "
+        "Region, Country and City."
+    )
+    st.dataframe(
+        df_city.sort_values(["Year", "Month", "Day"]),
+        use_container_width=True,
+    )
+
+with st.expander("📂 Show full dataset (warning: large)"):
+    st.dataframe(df.head(5000), use_container_width=True)
+    st.caption("Only first 5,000 rows are shown for performance reasons.")
