@@ -1,7 +1,10 @@
 import streamlit as st
 from PIL import Image
 from io import BytesIO
+from layout import set_base_style, render_sidebar
 
+set_base_style()
+render_sidebar()
 st.set_page_config(page_title="Image Cropper", page_icon="🖼")
 
 st.title("🖼 Image Cropper")
@@ -60,3 +63,4 @@ st.download_button(
     file_name="cropped_image.png",
     mime="image/png"
 )
+
