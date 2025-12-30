@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
+
 from layout import set_base_style, render_sidebar
 set_base_style()
 render_sidebar()
@@ -9,11 +10,12 @@ st.title("📺 Netflix Data Analysis")
 
 st.write(
     """
-    This page explores the public **Netflix titles dataset**.
-    Below you can find some key indicators and visualizations
-    similar to the official demo, plus your own charts.
+    This page explores the public **Netflix titles dataset**. Below you can find 
+    some key indicators and visualizations similar to the official demo, plus 
+    your own charts.
     """
 )
+
 df = None
 possible_paths = [
     "resources/netflix_titles.csv",
@@ -34,31 +36,38 @@ if df is None:
         "Make sure it is in `resources/` or `data/` folder."
     )
     st.stop()
+
+# limpieza ligera y tipos
 df["title"] = df["title"].astype(str)
-df["director"] = df["director"].astype(str)
-df["country"] = df["country"].astype(str)
+df["director"] = df["director"].astype("string")
+df["country"] = df["country"].astype("string")
 df["release_year"] = df["release_year"].astype(int)
 
 st.subheader("📊 Basic Information")
 
 min_year = int(df["release_year"].min())
 max_year = int(df["release_year"].max())
-missing_directors = int((df["director"] == "" ) | (df["director"].str.lower()=="nan")).sum()
-
-countries = (
+mask_missing_dir = (
+    df["director"].isna()
+    | df["director"].str.strip().eq("")
+    | df["director"].str.strip().str.lower().eq("nan")
+)
+missing_directors = int(mask_missing_dir.sum())
+countries_series = (
     df["country"]
-    .replace("nan", "")
+    .fillna("")
     .str.split(",")
     .explode()
     .str.strip()
 )
-unique_countries = countries[countries != ""].nunique()
+countries_series = countries_series[countries_series != ""]
+unique_countries = int(countries_series.nunique())
 
 avg_title_len = round(df["title"].str.len().mean(), 2)
 
-total_titles = len(df)
-movies = df[df["type"] == "Movie"].shape[0]
-tv_shows = df[df["type"] == "TV Show"].shape[0]
+total_titles = int(len(df))
+movies = int(df[df["type"] == "Movie"].shape[0])
+tv_shows = int(df[df["type"] == "TV Show"].shape[0])
 
 col1, col2, col3, col4, col5, col6 = st.columns(6)
 
@@ -76,7 +85,6 @@ with col6:
     st.metric("Total Titles", total_titles)
 
 st.markdown("---")
-
 st.subheader("🌍 Top Year Producer Countries")
 
 min_y = int(df["release_year"].min())
@@ -95,10 +103,9 @@ df_year = df[df["release_year"] == year]
 if df_year.empty:
     st.warning(f"No titles found for year {year}. Try another year.")
 else:
-    # contar países
     countries_year = (
         df_year["country"]
-        .replace("nan", "")
+        .fillna("")
         .str.split(",")
         .explode()
         .str.strip()
@@ -115,14 +122,11 @@ else:
     )
     ax.set_title(f"Top 10 Countries in {year}")
     ax.axis("equal")
-
     st.pyplot(fig)
 
 st.markdown("---")
-
 st.subheader("🎬 Titles by Type Over the Years")
 
-# Conteo por año y tipo
 type_year = (
     df.groupby(["release_year", "type"])["show_id"]
     .count()
@@ -144,14 +148,15 @@ st.pyplot(fig2)
 st.markdown("---")
 
 st.subheader("⭐ Top 10 Directors by Number of Titles")
+
 directors = (
     df["director"]
-    .replace(["nan", ""], pd.NA)
     .dropna()
     .str.split(",")
     .explode()
     .str.strip()
 )
+directors = directors[directors != ""]
 top_directors = directors.value_counts().head(10)
 
 fig3, ax3 = plt.subplots(figsize=(8, 4))
@@ -162,9 +167,3 @@ st.pyplot(fig3)
 
 st.markdown("---")
 
-st.subheader("📈 Your Existing Visualizations")
-
-st.info(
-    "The following section contains the charts you already built "
-    "for this assignment. Do not remove them; just paste them below."
-)
