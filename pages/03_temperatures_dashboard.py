@@ -11,7 +11,7 @@ st.title("🌡 Temperatures Dashboard")
 
 st.write(
     """
-    This page corresponds to the **Temperatures Dashboard** subproject of the IPLD final assignment.  
+    This page corresponds to the Temperatures Dashboard subproject of the IPLD final assignment.  
     We analyze temperature data with filters by city and date.
     """
 )
@@ -110,5 +110,6 @@ ax2.set_title(f"Daily temperature & 7-day rolling average in {selected_city}")
 ax2.legend()
 plt.xticks(rotation=45)
 st.pyplot(fig2)
+
 
 
