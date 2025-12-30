@@ -10,9 +10,7 @@ st.title("📺 Netflix Data Analysis")
 
 st.write(
     """
-    This page explores the public **Netflix titles dataset**. Below you can find 
-    some key indicators and visualizations similar to the official demo, plus 
-    your own charts.
+    This page explores the public Netflix titles dataset from Kaggle
     """
 )
 
@@ -166,4 +164,5 @@ ax3.set_title("Top 10 Directors")
 st.pyplot(fig3)
 
 st.markdown("---")
+
 
