@@ -18,7 +18,7 @@ st.write(
 
 @st.cache_data
 def load_data():
-    df = pd.read_csv("data/temperatures.csv")
+    df = pd.read_csv("temperatures.csv")
     df["date"] = pd.to_datetime(df["date"])
     if "temperature" not in df.columns:
         for c in df.columns:
@@ -110,6 +110,7 @@ ax2.set_title(f"Daily temperature & 7-day rolling average in {selected_city}")
 ax2.legend()
 plt.xticks(rotation=45)
 st.pyplot(fig2)
+
 
 
 
