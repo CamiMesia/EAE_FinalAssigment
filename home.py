@@ -1,7 +1,9 @@
 import streamlit as st
 from PIL import Image
-import layout  # <-- importamos nuestro módulo común
-
+import streamlit as st
+from layout import set_base_style, render_sidebar
+set_base_style()
+render_sidebar()
 st.set_page_config(
     page_title="IPLD Final Project",
     page_icon="👩‍💻",
@@ -85,3 +87,4 @@ st.markdown(
 )
 
 st.success("✔️ Home page ready. Use the sidebar to navigate to each subproject.")
+
