@@ -14,9 +14,10 @@ st.write(
     """
     This page explores a global **temperatures dataset**. You can filter by region, 
     country and city to analyse how the average temperature evolved over the years 
-    and by month
+    and by month, similar to the official demo.
     """
 )
+
 
 file_paths = sorted(glob("temperatures_part*.csv"))
 
@@ -24,7 +25,6 @@ if file_paths:
     df_list = [pd.read_csv(path) for path in file_paths]
     df = pd.concat(df_list, ignore_index=True)
 else:
-   
     try:
         df = pd.read_csv("temperatures.csv")
     except FileNotFoundError:
@@ -46,13 +46,55 @@ df["AvgTemperature"] = pd.to_numeric(df["AvgTemperature"], errors="coerce")
 
 df = df.dropna(subset=["Year", "Month", "AvgTemperature", "City"])
 
+# Crear columna de fecha para gráficos y min/max
 df["Date"] = pd.to_datetime(
     dict(year=df["Year"], month=df["Month"], day=df["Day"]),
     errors="coerce",
 )
 df = df.dropna(subset=["Date"])
 
-st.subheader("📊 Basic Information")
+st.subheader("Basic Information")
+
+left_col, right_col = st.columns([1.1, 2])
+
+with left_col:
+    city_list = (
+        pd.DataFrame(sorted(df["City"].dropna().unique()), columns=["Cities"])
+        .reset_index(drop=True)
+    )
+    st.dataframe(city_list, use_container_width=True, height=310)
+
+with right_col:
+
+    idx_min = df["AvgTemperature"].idxmin()
+    row_min = df.loc[idx_min]
+    min_temp_c = (row_min["AvgTemperature"] - 32) * 5.0 / 9.0
+    min_city = row_min["City"]
+    min_date = row_min["Date"].date()
+
+    idx_max = df["AvgTemperature"].idxmax()
+    row_max = df.loc[idx_max]
+    max_temp_c = (row_max["AvgTemperature"] - 32) * 5.0 / 9.0
+    max_city = row_max["City"]
+    max_date = row_max["Date"].date()
+
+
+    st.markdown(
+        f"### 🧊 Min Temperature: {min_temp_c:.1f}°C"
+    )
+    st.markdown(f"*{min_city} on {min_date}*")
+    st.write("")  # pequeño espacio
+
+    # Max
+    st.markdown(
+        f"### 🌵 Max Temperature: {max_temp_c:.1f}°C"
+    )
+    st.markdown(f"*{max_city} on {max_date}*")
+
+st.markdown("---")
+
+
+st.subheader("📊 Global Indicators")
 
 min_year = int(df["Year"].min())
 max_year = int(df["Year"].max())
@@ -78,6 +120,7 @@ with col6:
     st.metric("Global Avg Temp (°F)", global_avg_temp)
 
 st.markdown("---")
+
 
 st.subheader("🌍 Filters")
 
@@ -108,6 +151,7 @@ if df_city.empty:
 st.markdown(
     f"### 📌 Selected: **{selected_city}**, {selected_country} ({selected_region})"
 )
+
 
 st.subheader("📈 Avg Temperature by Year")
 
@@ -162,6 +206,7 @@ else:
 
 st.markdown("---")
 
+
 st.subheader("🌡️ Comparing the Temperatures of the Cities")
 
 all_cities = sorted(df["City"].dropna().unique())
@@ -206,7 +251,6 @@ if selected_cities_compare:
     if df_compare.empty:
         st.warning("No data for the selected cities and date range.")
     else:
-       
         df_compare["TempC"] = (df_compare["AvgTemperature"] - 32) * 5.0 / 9.0
 
         fig3, ax3 = plt.subplots(figsize=(9, 4))
