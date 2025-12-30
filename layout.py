@@ -1,114 +1,63 @@
+<<<<<<< HEAD
+import streamlit as st
+=======
 # layout.py
 import streamlit as st
 from PIL import Image
+>>>>>>> 473d794c6a6d168d9c6e29c045e8dcceec91f707
+
 
 def set_base_style():
-    """Aplica el CSS común a todas las páginas."""
-    st.markdown("""
-    <style>
-    /* Fondo degradado del main */
-    .main {
-        background: radial-gradient(circle at top, #202332 0, #05060a 55%);
-        color: #f5f5f5;
-    }
+    st.set_page_config(
+        page_title="EAE IPLD · Final Project",
+        page_icon="📊",
+        layout="wide",
+    )
 
-    /* Sidebar oscuro */
-    [data-testid="stSidebar"] {
-        background: #15161c;
-        color: #ffffff;
-    }
-
-    /* Quitar padding extra arriba */
-    .block-container {
-        padding-top: 1.5rem;
-    }
-
-    /* Tarjeta principal */
-    .hero-card {
-        background: rgba(10, 10, 15, 0.9);
-        border-radius: 24px;
-        padding: 32px 42px;
-        border: 1px solid rgba(255,255,255,0.07);
-        box-shadow: 0 20px 45px rgba(0,0,0,0.55);
-    }
-
-    .hero-title {
-        font-size: 2.6rem;
-        font-weight: 700;
-        text-align: center;
-        margin-bottom: 0.3rem;
-    }
-    .hero-title span { color: #ff4d4f; }
-    .hero-subtitle {
-        text-align: center;
-        font-size: 1.1rem;
-        color: #d0d0d0;
-    }
-
-    .profile-placeholder {
-        width: 220px;
-        height: 220px;
-        border-radius: 50%;
-        border: 5px solid #ff4d4f;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto 0.5rem auto;
-        color: #ff4d4f;
-        font-weight: 700;
-        font-size: 22px;
-        text-align: center;
-    }
-
-    .center { text-align: center; }
-
-    .chip-row {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.7rem;
-        justify-content: center;
-        margin-top: 1rem;
-    }
-    .chip {
-        padding: 0.4rem 0.8rem;
-        border-radius: 999px;
-        border: 1px solid rgba(255,255,255,0.12);
-        background: rgba(255,255,255,0.03);
-        font-size: 0.88rem;
-    }
-    </style>
-    """, unsafe_allow_html=True)
+    # Estilos generales
+    st.markdown(
+        """
+        <style>
+        .main .block-container {
+            padding-top: 2rem;
+            padding-bottom: 2rem;
+            padding-left: 4rem;
+            padding-right: 4rem;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
 
 
 def render_sidebar():
-    """Dibuja el sidebar común a todas las páginas."""
-    with st.sidebar:
-        # Logo EAE
-        try:
-            logo = Image.open("eaelogo.png")
-            st.image(logo, use_column_width=True)
-        except Exception:
-            st.markdown("### EAE Business School")
-            st.caption("Add eaelogo.png to the project folder.")
+    # Logo EAE
+    st.sidebar.image("eaelogo.png", use_container_width=True)
 
-        st.markdown("---")
-        st.markdown("#### Introduction to Programming Languages for Data")
-        st.caption("Final Project – Dec 2025")
+    st.sidebar.markdown("---")
+    st.sidebar.markdown(
+        """
+        **Introduction to Programming  
+        Languages for Data**
 
-        st.markdown("**Author:** Natalia González")   # <- tu nombre
-        st.markdown("**Instructor:** Enric Domingo")
+        *Final Project – Dec 2025*
 
-        st.markdown("---")
-        st.markdown("#### 📂 Navigation")
-        st.markdown(
-            """
-            Use the menu above to switch between pages:
+        **Author:** Natalia González  
 
-            - 🖼 Image Cropper  
-            - 🎬 Netflix Data Analysis  
-            - 🌡 Temperatures Dashboard  
-            """
-        )
+        **Instructor:** Enric Domingo
+        """,
+    )
 
-        st.markdown("---")
-        st.caption("Streamlit multi-page app · EAE IPLD")
+    st.sidebar.markdown("---")
+    st.sidebar.subheader("📂 Navigation")
+    st.sidebar.write("Use the buttons below to switch between pages:")
+
+    # Enlaces internos a las páginas
+    st.sidebar.page_link("home.py", label="👋 Home")
+    st.sidebar.page_link("pages/01_image_cropper.py", label="🖼 Image Cropper")
+    st.sidebar.page_link("pages/02_netflix_data_analysis.py", label="📺 Netflix Data Analysis")
+    st.sidebar.page_link("pages/03_temperatures_dashboard.py", label="🌡 Temperatures Dashboard")
+
+    st.sidebar.markdown("---")
+    st.sidebar.caption("Streamlit multi-page app · EAE IPLD")
+
