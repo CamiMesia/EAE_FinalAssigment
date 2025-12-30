@@ -1,10 +1,4 @@
-<<<<<<< HEAD
 import streamlit as st
-=======
-# layout.py
-import streamlit as st
-from PIL import Image
->>>>>>> 473d794c6a6d168d9c6e29c045e8dcceec91f707
 
 
 def set_base_style():
@@ -34,7 +28,10 @@ def render_sidebar():
     # Logo EAE
     st.sidebar.image("eaelogo.png", use_container_width=True)
 
+    # Línea separadora
     st.sidebar.markdown("---")
+
+    # Info del proyecto
     st.sidebar.markdown(
         """
         **Introduction to Programming  
@@ -49,6 +46,8 @@ def render_sidebar():
     )
 
     st.sidebar.markdown("---")
+
+    # 🔗 NAVEGACIÓN (AQUÍ ESTÁ LA MAGIA)
     st.sidebar.subheader("📂 Navigation")
     st.sidebar.write("Use the buttons below to switch between pages:")
 
@@ -60,4 +59,3 @@ def render_sidebar():
 
     st.sidebar.markdown("---")
     st.sidebar.caption("Streamlit multi-page app · EAE IPLD")
-
