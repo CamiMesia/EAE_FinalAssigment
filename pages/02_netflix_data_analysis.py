@@ -35,11 +35,15 @@ if df is None:
     )
     st.stop()
 
-# limpieza ligera y tipos
 df["title"] = df["title"].astype(str)
 df["director"] = df["director"].astype("string")
 df["country"] = df["country"].astype("string")
 df["release_year"] = df["release_year"].astype(int)
+
+
+with st.expander("📂 Show Full Netflix Dataset"):
+    st.write("Below is the loaded dataset used for this analysis:")
+    st.dataframe(df, use_container_width=True)
 
 st.subheader("📊 Basic Information")
 
@@ -164,5 +168,30 @@ ax3.set_title("Top 10 Directors")
 st.pyplot(fig3)
 
 st.markdown("---")
+
+st.subheader("🎞️ Avg Duration of Movies by Year")
+
+movies_df = df[df["type"] == "Movie"].copy()
+movies_df["duration"] = (
+    movies_df["duration"]
+    .str.replace(" min", "", regex=False)
+    .astype("float")
+)
+
+avg_duration = (
+    movies_df.groupby("release_year")["duration"]
+    .mean()
+    .reset_index()
+)
+
+fig4, ax4 = plt.subplots(figsize=(10, 5))
+ax4.plot(avg_duration["release_year"], avg_duration["duration"], linewidth=2)
+ax4.set_title("Average Duration of Movies Across Years")
+ax4.set_xlabel("Year")
+ax4.set_ylabel("Avg Duration (min)")
+st.pyplot(fig4)
+
+st.markdown("---")
+
 
 
