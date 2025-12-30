@@ -17,18 +17,6 @@ st.write(
     """
 )
 
-with st.expander("📂 Show filtered dataset"):
-    st.write(
-        "Below you can see the subset of the dataset for the selected "
-        "Region, Country and City."
-    )
-    st.dataframe(df_city.sort_values(["Year", "Month", "Day"]), use_container_width=True)
-
-with st.expander("📂 Show full dataset (warning: large)"):
-    st.dataframe(df.head(5000), use_container_width=True)
-    st.caption("Only first 5,000 rows are shown for performance reasons.")
-file_paths = sorted(glob("temperatures_part*.csv"))
-
 df = None
 if file_paths:
     df_list = [pd.read_csv(path) for path in file_paths]
@@ -55,6 +43,19 @@ df["Day"] = pd.to_numeric(df["Day"], errors="coerce").astype("Int64")
 df["AvgTemperature"] = pd.to_numeric(df["AvgTemperature"], errors="coerce")
 
 df = df.dropna(subset=["Year", "Month", "AvgTemperature", "City"])
+
+with st.expander("📂 Show filtered dataset"):
+    st.write(
+        "Below you can see the subset of the dataset for the selected "
+        "Region, Country and City."
+    )
+    st.dataframe(df_city.sort_values(["Year", "Month", "Day"]), use_container_width=True)
+
+with st.expander("📂 Show full dataset (warning: large)"):
+    st.dataframe(df.head(5000), use_container_width=True)
+    st.caption("Only first 5,000 rows are shown for performance reasons.")
+file_paths = sorted(glob("temperatures_part*.csv"))
+
 st.subheader("📊 Basic Information")
 
 min_year = int(df["Year"].min())
@@ -164,5 +165,6 @@ else:
     st.pyplot(fig2)
 
 st.markdown("---")
+
 
 
