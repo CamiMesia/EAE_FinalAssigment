@@ -1,73 +1,116 @@
 import streamlit as st
 from PIL import Image
 
+# ---------- CONFIG BÁSICA ----------
 st.set_page_config(
-    page_title="IPLD Final Project - Natalia González",
+    page_title="IPLD Final Project",
     page_icon="👩‍💻",
-    layout="centered"
+    layout="wide"
 )
 
-st.title("Final Project - Introduction to Programming Languages for Data")
-st.subheader("by Natalia González")
+# ---------- ESTILOS (CSS) ----------
+st.markdown(
+    """
+    <style>
+    /* Fondo oscuro y texto claro en el área principal */
+    .main {
+        background-color: #101014;
+        color: white;
+    }
+    /* Sidebar oscuro */
+    [data-testid="stSidebar"] {
+        background-color: #15151b;
+    }
+    /* Centrar texto de algunos bloques */
+    .centered {
+        text-align: center;
+    }
+    /* Imagen de perfil redonda */
+    .profile-img {
+        width: 260px;
+        height: 260px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 6px solid #ff0000;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
-col1, col2 = st.columns([1, 2])
-
-with col1:
+# ---------- SIDEBAR ----------
+with st.sidebar:
+    # Logo EAE
     try:
-        image = Image.open("natalia.jpg")  # Cambia por el nombre de tu archivo
-        st.image(image, caption="Natalia González", use_column_width=True)
-    except FileNotFoundError:
-        st.warning("Sube tu foto (por ejemplo 'natalia.jpg') al directorio principal del proyecto.")
+        logo = Image.open("eae_logo.png")   # <-- cambia el nombre si tu archivo se llama distinto
+        st.image(logo, use_column_width=True)
+    except Exception:
+        st.warning("Añade el archivo 'eae_logo.png' en la carpeta del proyecto.")
 
-with col2:
+    st.markdown("## Introduction to Programming<br>Languages for Data", unsafe_allow_html=True)
+
+    st.markdown("*Final Project - Dec 2025*")  # Cambia el año si quieres que ponga 2023
+
+    st.markdown("**Author:** Natalia González")      # <-- pon aquí tu nombre
+    st.markdown("**Instructor:** Enric Domingo")     # <-- nombre del profesor
+
+# ---------- CONTENIDO PRINCIPAL ----------
+st.markdown("<h1 class='centered'>My name is Natalia González</h1>", unsafe_allow_html=True)
+
+# Imagen de perfil en círculo
+try:
+    profile = Image.open("profile.jpg")   # <-- cambia si tu foto tiene otro nombre
+    st.markdown("<div class='centered'>", unsafe_allow_html=True)
+    st.image(profile, use_column_width=False, width=260, caption="")  # la clase CSS hace el círculo
+    st.markdown("</div>", unsafe_allow_html=True)
+except Exception:
+    # Si no encuentra la imagen, muestra un círculo con texto como en la demo
     st.markdown(
         """
-        ### About me
-        I am a student of **EAE Business School** in the subject _Introduction to Programming Languages for Data (IPLD)_.
-        
-        This web application has been developed as my **final project** for the course.  
-        It combines:
-        - Python 🐍  
-        - Numpy and Pandas for data analysis 📊  
-        - Matplotlib for visualizations 📈  
-        - Streamlit to deploy everything as a web app 🌐
-        """
+        <div class='centered'>
+            <div style="
+                width:260px;
+                height:260px;
+                border-radius:50%;
+                border:6px solid #ff0000;
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                margin:auto;
+                color:#ff0000;
+                font-weight:bold;
+                font-size:26px;
+                text-align:center;
+                ">
+                Your<br>Profile<br>Image
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True
     )
 
+st.markdown(
+    """
+    <p class="centered" style="margin-top:30px; font-style:italic;">
+    Short description and/or Studies or Description
+    </p>
+    """,
+    unsafe_allow_html=True
+)
+
 st.markdown("---")
-st.header("Project Overview")
 
 st.markdown(
     """
-    This project is divided into three main subprojects, each one implemented in a Jupyter Notebook
-    and also integrated in this web application:
-    
-    1. **Image Cropper**  
-       Upload an image and interactively crop it using a simple interface.
-    
-    2. **Netflix Data Analysis**  
-       Explore a dataset of Netflix titles and visualize distributions and trends.
-    
-    3. **Temperatures Dashboard**  
-       Analyze temperature data with flexible filters and time-series visualizations.
-    """
+    <p class="centered">
+    This web application is my final project for the subject 
+    <strong>Introduction to Programming Languages for Data</strong> at 
+    <strong>EAE Business School</strong>.
+    </p>
+    """,
+    unsafe_allow_html=True
 )
 
-st.markdown("---")
-st.header("Application Sections")
-
-st.markdown(
-    """
-    You can access the different parts of the project using the menu on the left (Streamlit sidebar):
-
-    - 📷 **Image Cropper** → `01_image_cropper`
-    - 🎬 **Netflix Data Analysis** → `02_netflix_data_analysis`
-    - 🌡 **Temperatures Dashboard** → `03_temperatures_dashboard`
-    """
-)
-
-st.markdown("---")
-
-st.info(
-    "This app is deployed using **Streamlit Cloud**, and the source code is available in my public GitHub repository."
-)
