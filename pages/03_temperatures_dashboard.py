@@ -30,7 +30,7 @@ def load_data():
 try:
     df = load_data()
 except FileNotFoundError:
-    st.error("The file `data/temperatures.csv` was not found. Add it to the `data` folder.")
+    st.error("The file `temperatures.csv` was not found. Add it to the `data` folder.")
     st.stop()
 
 st.subheader("Dataset preview")
@@ -86,7 +86,6 @@ col3.metric("Max temperature (°C)", f"{filtered_df['temperature'].max():.2f}")
 
 st.markdown("---")
 
-# --------- GRÁFICO 1: SERIE TEMPORAL ---------
 st.subheader(f"Daily temperature in {selected_city}")
 
 fig1, ax1 = plt.subplots(figsize=(10, 4))
@@ -97,7 +96,6 @@ ax1.set_title(f"Temperature over time in {selected_city}")
 plt.xticks(rotation=45)
 st.pyplot(fig1)
 
-# --------- GRÁFICO 2: MEDIA MÓVIL ---------
 st.subheader("7-day rolling average")
 
 df_rolling = filtered_df.set_index("date").sort_index()
@@ -112,4 +110,5 @@ ax2.set_title(f"Daily temperature & 7-day rolling average in {selected_city}")
 ax2.legend()
 plt.xticks(rotation=45)
 st.pyplot(fig2)
+
 
