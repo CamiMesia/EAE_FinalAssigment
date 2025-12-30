@@ -1,7 +1,10 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
+from layout import set_base_style, render_sidebar
 
+set_base_style()
+render_sidebar()
 st.set_page_config(page_title="Temperatures Dashboard", page_icon="🌡")
 
 st.title("🌡 Temperatures Dashboard")
@@ -109,3 +112,4 @@ ax2.set_title(f"Daily temperature & 7-day rolling average in {selected_city}")
 ax2.legend()
 plt.xticks(rotation=45)
 st.pyplot(fig2)
+
